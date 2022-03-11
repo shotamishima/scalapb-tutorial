@@ -1,0 +1,14 @@
+data/
+
+/.vscode
+
+/target/
+/project/**/target/
+
+.metals
+.bloop
+project/**/metals.sbt
+
+.bsp
+
+.DS_Store
