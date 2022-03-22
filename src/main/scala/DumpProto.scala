@@ -9,28 +9,32 @@ import scala.util.Using
 
 object DumpProto extends App {
 
-    def readFromFile(path: String): Person = 
+    def readFromFile(path: String): PersonList = 
         // input streamのバイナリをパースする
         Using(new FileInputStream(path)) { fileInputStream => 
-            Person.parseFrom(fileInputStream)
+            PersonList.parseFrom(fileInputStream)
         }.recover {
             case _: FileNotFoundException =>
                 println("No person found. Will create a new file.")
-                Person()
+                PersonList()
         }.get
 
     def addPerson(path: String): Unit = {
-        val newPerson = Person(
-            name = Some("Alice"),
-            age = Some(30),
-            gender = Some(Gender.MALE),
-            addresses = Seq(
-                Address(street = Some("1st"), city = Some("NewYork"))
+        // personの配列を生成後、personList(repeated)のcase classに設定する
+        val newPeople = for (i <- 1 to 5) yield {
+            Person(
+                name = Some("Alice"),
+                age = Some(30 + i),
+                gender = Some(Gender.MALE),
+                addresses = Seq(
+                    Address(street = Some(s"No.$i"), city = Some("NewYork"))
+                )
             )
-        ) 
+        }
+        val peopleList = PersonList(newPeople)
         Using(new FileOutputStream(path)) { output =>
-            newPerson.writeTo(output)
-        }   
+            peopleList.writeTo(output)
+        }
     }
 
     def menu(): Int = {

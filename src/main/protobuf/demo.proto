@@ -20,3 +20,7 @@ message Person {
     repeated Address addresses = 5;
 
 }
+
+message PersonList {
+    repeated Person people = 1;
+}
